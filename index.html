@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Retro Snake Game</title>
+    <title>Responsive Retro Snake Game</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -23,17 +23,18 @@
             padding: 20px;
             color: #fff;
             overflow-x: hidden;
+            touch-action: manipulation;
         }
         
         .container {
-            max-width: 600px;
+            max-width: 100%;
             width: 100%;
             text-align: center;
         }
         
         h1 {
-            font-size: 2.8rem;
-            margin-bottom: 20px;
+            font-size: 2.2rem;
+            margin-bottom: 15px;
             text-transform: uppercase;
             letter-spacing: 2px;
             color: #ffcc00;
@@ -44,29 +45,39 @@
         .game-info {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             background: rgba(0, 0, 0, 0.5);
-            padding: 15px;
+            padding: 12px;
             border-radius: 8px;
             border: 4px solid #ffcc00;
             box-shadow: 0 0 10px rgba(255, 204, 0, 0.5);
+            flex-wrap: wrap;
+            gap: 10px;
         }
         
         .info-box {
             background: rgba(0, 0, 0, 0.7);
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 8px;
             border: 2px solid #ffcc00;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            flex: 1;
+            min-width: 100px;
+        }
+        
+        .game-board-container {
+            position: relative;
+            width: 100%;
+            margin: 0 auto 20px;
+            max-width: 500px;
         }
         
         .game-board {
             display: grid;
             grid-template-columns: repeat(20, 1fr);
             grid-template-rows: repeat(20, 1fr);
-            width: 500px;
-            height: 500px;
-            margin: 0 auto 30px;
+            width: 100%;
+            aspect-ratio: 1 / 1;
             border: 8px solid #ffcc00;
             border-radius: 4px;
             background: #0a2e36;
@@ -96,21 +107,23 @@
             margin-top: 20px;
             display: flex;
             justify-content: center;
-            gap: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
         
         button {
             background: linear-gradient(135deg, #ffcc00, #ff6600);
             border: none;
-            padding: 12px 25px;
+            padding: 12px 20px;
             border-radius: 8px;
             color: #000;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1rem;
             cursor: pointer;
             transition: all 0.3s;
             box-shadow: 0 4px 0 #cc0000;
             text-transform: uppercase;
+            min-width: 120px;
         }
         
         button:hover {
@@ -121,6 +134,44 @@
         button:active {
             transform: translateY(2px);
             box-shadow: 0 2px 0 #cc0000;
+        }
+        
+        .mobile-controls {
+            display: none;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 20px;
+            max-width: 300px;
+            width: 100%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .mobile-controls button {
+            min-width: auto;
+            padding: 15px;
+            font-size: 1.5rem;
+        }
+        
+        .up-btn {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .left-btn {
+            grid-column: 1;
+            grid-row: 2;
+        }
+        
+        .right-btn {
+            grid-column: 3;
+            grid-row: 2;
+        }
+        
+        .down-btn {
+            grid-column: 2;
+            grid-row: 3;
         }
         
         .game-over {
@@ -147,15 +198,15 @@
         
         .game-over-content {
             background: linear-gradient(135deg, #0a2e36, #163c47);
-            padding: 40px;
+            padding: 30px;
             border-radius: 20px;
             text-align: center;
             border: 4px solid #ffcc00;
             box-shadow: 0 0 30px rgba(255, 204, 0, 0.5);
             transform: scale(0.9);
             transition: transform 0.5s;
-            max-width: 500px;
-            width: 90%;
+            max-width: 90%;
+            width: 400px;
         }
         
         .game-over.show .game-over-content {
@@ -163,7 +214,7 @@
         }
         
         .game-over h2 {
-            font-size: 2.5rem;
+            font-size: 2rem;
             color: #ffcc00;
             text-shadow: 2px 2px 0 #ff0000;
             margin-bottom: 20px;
@@ -171,12 +222,12 @@
         
         .instructions {
             background: rgba(0, 0, 0, 0.5);
-            padding: 20px;
+            padding: 15px;
             border-radius: 8px;
             border: 2px solid #ffcc00;
-            margin-top: 30px;
+            margin-top: 20px;
             text-align: left;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
         }
         
         .instructions h3 {
@@ -187,7 +238,7 @@
         
         .instructions ul {
             list-style-type: none;
-            padding: 0 15px;
+            padding: 0 10px;
         }
         
         .instructions li {
@@ -199,6 +250,24 @@
         .instructions i {
             color: #ffcc00;
             margin-right: 10px;
+        }
+        
+        .pause-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            border: 4px solid #ffcc00;
+            text-align: center;
+            display: none;
+            z-index: 10;
+        }
+        
+        .pause-indicator.show {
+            display: block;
         }
         
         @keyframes glow {
@@ -215,31 +284,79 @@
             100% { transform: scale(1.2); }
         }
         
-        @media (max-width: 600px) {
-            .game-board {
-                width: 350px;
-                height: 350px;
+        /* Mobile devices */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.8rem;
             }
             
-            h1 {
-                font-size: 2rem;
+            .game-info {
+                padding: 10px;
             }
             
             .info-box {
+                padding: 6px 10px;
                 font-size: 0.7rem;
-                padding: 8px 12px;
+            }
+            
+            button {
+                padding: 10px 15px;
+                font-size: 0.9rem;
+                min-width: 100px;
+            }
+            
+            .mobile-controls {
+                display: grid;
+            }
+            
+            .instructions {
+                font-size: 0.7rem;
             }
         }
         
-        @media (max-width: 400px) {
-            .game-board {
-                width: 300px;
-                height: 300px;
+        /* Very small devices */
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5rem;
+                margin-bottom: 10px;
             }
             
-            h1 {
-                font-size: 1.7rem;
+            .game-info {
+                margin-bottom: 15px;
             }
+            
+            .info-box {
+                font-size: 0.6rem;
+                min-width: 80px;
+            }
+            
+            button {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+                min-width: 90px;
+            }
+            
+            .mobile-controls {
+                max-width: 250px;
+            }
+            
+            .mobile-controls button {
+                padding: 12px;
+                font-size: 1.2rem;
+            }
+            
+            .game-over-content {
+                padding: 20px;
+            }
+            
+            .game-over h2 {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Prevent zoom on double-tap for mobile */
+        button, .mobile-controls button {
+            touch-action: manipulation;
         }
     </style>
     <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
@@ -260,8 +377,21 @@
             </div>
         </div>
         
-        <div class="game-board" id="game-board">
-            <!-- Game board will be generated by JavaScript -->
+        <div class="game-board-container">
+            <div class="game-board" id="game-board">
+                <!-- Game board will be generated by JavaScript -->
+            </div>
+            <div class="pause-indicator" id="pause-indicator">
+                <h3>GAME PAUSED</h3>
+                <p>Press Resume to continue</p>
+            </div>
+        </div>
+        
+        <div class="mobile-controls">
+            <button class="up-btn" id="up-btn"><i class="fas fa-arrow-up"></i></button>
+            <button class="left-btn" id="left-btn"><i class="fas fa-arrow-left"></i></button>
+            <button class="right-btn" id="right-btn"><i class="fas fa-arrow-right"></i></button>
+            <button class="down-btn" id="down-btn"><i class="fas fa-arrow-down"></i></button>
         </div>
         
         <div class="controls">
@@ -273,7 +403,7 @@
         <div class="instructions">
             <h3>How to Play</h3>
             <ul>
-                <li><i class="fas fa-arrow-up"></i> Use arrow keys to control the snake</li>
+                <li><i class="fas fa-arrow-up"></i> Use arrow keys or buttons to control the snake</li>
                 <li><i class="fas fa-apple-alt"></i> Eat the red food to grow and score points</li>
                 <li><i class="fas fa-skull"></i> Avoid hitting the walls and yourself</li>
                 <li><i class="fas fa-tachometer-alt"></i> Speed increases every 5 points</li>
@@ -306,6 +436,13 @@
             const resetBtn = document.getElementById('reset-btn');
             const gameOverScreen = document.getElementById('game-over');
             const restartBtn = document.getElementById('restart-btn');
+            const pauseIndicator = document.getElementById('pause-indicator');
+            
+            // Mobile control buttons
+            const upBtn = document.getElementById('up-btn');
+            const leftBtn = document.getElementById('left-btn');
+            const rightBtn = document.getElementById('right-btn');
+            const downBtn = document.getElementById('down-btn');
             
             // Game configuration
             const gridSize = 20;
@@ -319,6 +456,7 @@
             let level = 1;
             let gameRunning = false;
             let gameInterval;
+            let isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             
             // Initialize game
             function initGame() {
@@ -497,6 +635,7 @@
                     gameInterval = setInterval(gameLoop, gameSpeed);
                     startBtn.disabled = true;
                     pauseBtn.disabled = false;
+                    pauseIndicator.classList.remove('show');
                 }
             }
             
@@ -507,6 +646,14 @@
                     clearInterval(gameInterval);
                     startBtn.disabled = false;
                     pauseBtn.disabled = true;
+                    pauseIndicator.classList.add('show');
+                }
+            }
+            
+            // Resume the game
+            function resumeGame() {
+                if (!gameRunning) {
+                    startGame();
                 }
             }
             
@@ -516,6 +663,7 @@
                 initGame();
                 startBtn.disabled = false;
                 pauseBtn.disabled = false;
+                pauseIndicator.classList.remove('show');
             }
             
             // Game over
@@ -538,17 +686,94 @@
                 
                 switch (e.key) {
                     case 'ArrowUp':
+                    case 'w':
+                    case 'W':
                         if (direction !== 'down') nextDirection = 'up';
                         break;
                     case 'ArrowDown':
+                    case 's':
+                    case 'S':
                         if (direction !== 'up') nextDirection = 'down';
                         break;
                     case 'ArrowLeft':
+                    case 'a':
+                    case 'A':
                         if (direction !== 'right') nextDirection = 'left';
                         break;
                     case 'ArrowRight':
+                    case 'd':
+                    case 'D':
                         if (direction !== 'left') nextDirection = 'right';
                         break;
+                    case ' ':
+                        if (gameRunning) {
+                            pauseGame();
+                        } else {
+                            startGame();
+                        }
+                        break;
+                }
+            }
+            
+            // Handle mobile control buttons
+            function setupMobileControls() {
+                upBtn.addEventListener('click', () => {
+                    if (direction !== 'down') nextDirection = 'up';
+                });
+                
+                downBtn.addEventListener('click', () => {
+                    if (direction !== 'up') nextDirection = 'down';
+                });
+                
+                leftBtn.addEventListener('click', () => {
+                    if (direction !== 'right') nextDirection = 'left';
+                });
+                
+                rightBtn.addEventListener('click', () => {
+                    if (direction !== 'left') nextDirection = 'right';
+                });
+            }
+            
+            // Handle swipe gestures for mobile
+            function setupSwipeControls() {
+                let touchStartX = 0;
+                let touchStartY = 0;
+                let touchEndX = 0;
+                let touchEndY = 0;
+                
+                gameBoard.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                    touchStartY = e.changedTouches[0].screenY;
+                }, false);
+                
+                gameBoard.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    touchEndY = e.changedTouches[0].screenY;
+                    handleSwipe();
+                }, false);
+                
+                function handleSwipe() {
+                    const dx = touchEndX - touchStartX;
+                    const dy = touchEndY - touchStartY;
+                    
+                    // Minimum swipe distance
+                    if (Math.max(Math.abs(dx), Math.abs(dy)) < 30) return;
+                    
+                    if (Math.abs(dx) > Math.abs(dy)) {
+                        // Horizontal swipe
+                        if (dx > 0 && direction !== 'left') {
+                            nextDirection = 'right';
+                        } else if (dx < 0 && direction !== 'right') {
+                            nextDirection = 'left';
+                        }
+                    } else {
+                        // Vertical swipe
+                        if (dy > 0 && direction !== 'up') {
+                            nextDirection = 'down';
+                        } else if (dy < 0 && direction !== 'down') {
+                            nextDirection = 'up';
+                        }
+                    }
                 }
             }
             
@@ -559,9 +784,18 @@
             restartBtn.addEventListener('click', restartGame);
             document.addEventListener('keydown', handleKeydown);
             
+            // Setup mobile controls
+            setupMobileControls();
+            setupSwipeControls();
+            
             // Initialize the game
             initGame();
             highScoreElement.textContent = highScore;
+            
+            // Show mobile controls on mobile devices
+            if (isMobile) {
+                document.querySelector('.mobile-controls').style.display = 'grid';
+            }
         });
     </script>
 </body>
