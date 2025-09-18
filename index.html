@@ -450,7 +450,7 @@
             let food = {};
             let direction = 'right';
             let nextDirection = 'right';
-            let gameSpeed = 150;
+            let gameSpeed = 225;
             let score = 0;
             let highScore = localStorage.getItem('snakeHighScore') || 0;
             let level = 1;
@@ -487,7 +487,7 @@
                 nextDirection = 'right';
                 score = 0;
                 level = 1;
-                gameSpeed = 150;
+                gameSpeed = 225;
                 
                 // Update UI
                 scoreElement.textContent = score;
@@ -800,3 +800,4 @@
     </script>
 </body>
 </html>
+
